@@ -1,22 +1,19 @@
-#Books to scrape sayfasını selenium ile next butonuna tıklayarak scrape ettik.
-
-
 import time
 import undetected_chromedriver as uc
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 
-# 🔹 Chrome'u başlat
+# 🔹 Launch Chrome browser
 driver = uc.Chrome()
 driver.get("http://books.toscrape.com/")
 driver.maximize_window()
 time.sleep(2)
 
 while True:
-    # 1️⃣ Sayfa HTML'sini çek
+    # 1️⃣ Parse the current page with BeautifulSoup
     soup = BeautifulSoup(driver.page_source, "lxml")
 
-    # 2️⃣ Kitapları çek
+    # 2️⃣ Extract all book items on the page
     books = soup.find_all("article", class_="product_pod")
     for book in books:
         title = book.h3.a["title"]
@@ -25,14 +22,14 @@ while True:
 
     print("-" * 60)
 
-    # 3️⃣ “Next” butonunu bul ve tıkla
+    # 3️⃣ Find and click the "Next" button to go to the next page
     try:
         next_button = driver.find_element(By.PARTIAL_LINK_TEXT, "next")
-        print("➡ Sonraki sayfaya geçiliyor...")
+        print("➡ Moving to the next page...")
         next_button.click()
-        time.sleep(2)  # Sayfanın yüklenmesini bekle
+        time.sleep(2)  # Wait for the page to load
     except:
-        print("✅ Son sayfaya ulaşıldı.")
+        print("✅ Reached the last page.")
         break
 
 driver.quit()
